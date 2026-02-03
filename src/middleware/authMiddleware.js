@@ -1,6 +1,6 @@
-const jwt = require('jsonwebtoken');
+import jwt from 'jsonwebtoken';
 
-module.exports = function (req, res, next) {
+const verify = (req, res, next) => {
     const token = req.header('auth-token');
     if (!token) return res.status(401).send('Access Denied');
 
@@ -13,10 +13,14 @@ module.exports = function (req, res, next) {
     }
 };
 
-module.exports.isAdmin = function (req, res, next) {
-    if (req.user && req.user.role === 'admin') {
+const isAdmin = (req, res, next) => {
+    // Since we only have Admin model now, if user is authenticated, they are admin
+    if (req.user) {
         next();
     } else {
         return res.status(403).send('Access Denied: Admins Only');
     }
 };
+
+export default verify;
+export { isAdmin };

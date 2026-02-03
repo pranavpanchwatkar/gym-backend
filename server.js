@@ -1,7 +1,7 @@
-const express = require('express');
-const mongoose = require('mongoose');
-const dotenv = require('dotenv');
-const cors = require('cors');
+import express from 'express';
+import mongoose from 'mongoose';
+import dotenv from 'dotenv';
+import cors from 'cors';
 
 dotenv.config();
 
@@ -17,9 +17,13 @@ mongoose.connect(process.env.MONGO_URI)
     .catch(err => console.log(err));
 
 // Routes
-app.use('/api/auth', require('./routes/auth'));
-app.use('/api/plans', require('./routes/plans'));
-app.use('/api/offers', require('./routes/offers'));
+import authRoutes from './src/routes/auth.js';
+import planRoutes from './src/routes/plans.js';
+import leadRoutes from './src/routes/leads.js';
+
+app.use('/api/auth', authRoutes);
+app.use('/api/plans', planRoutes);
+app.use('/api/leads', leadRoutes);
 
 const PORT = process.env.PORT || 5000;
 
