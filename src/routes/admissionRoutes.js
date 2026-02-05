@@ -8,6 +8,7 @@ import {
 
 const router = express.Router();
 
+router.get('/search', searchAdmissions);
 router.post('/create', createAdmission);
 router.get('/getadmissions', getAdmissions);
 router.get('/getadmissionbyid/:id', getAdmissionById);
