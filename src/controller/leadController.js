@@ -58,7 +58,7 @@ export const createLead = async (req, res) => {
         const savedLead = await lead.save();
         const populatedLead = await Lead.findById(savedLead._id).populate('plan', 'name price');
 
-        res.status(201).json(populatedLead);
+        res.status(201).json(populatedLead, { message: 'Lead created successfully' });
     } catch (err) {
         res.status(400).json({ message: err.message });
     }

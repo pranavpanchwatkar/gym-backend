@@ -3,7 +3,6 @@ import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import cors from 'cors';
 
-
 dotenv.config();
 
 const app = express();
@@ -18,15 +17,22 @@ mongoose.connect(process.env.MONGO_URI)
     .catch(err => console.log(err));
 
 // Routes
-import authRoutes from './src/routes/auth.js';
-import planRoutes from './src/routes/plans.js';
-import leadRoutes from './src/routes/leads.js';
-import admissionRoutes from './src/routes/admissionRoutes.js';
+import authRoutes from './routes/authRoutes.js';
+import planRoutes from './routes/plansRoutes.js';
+import leadRoutes from './routes/leadsRoutes.js';
+import calculateRoutes from './routes/calculateRoutes.js';
+import trainerRoutes from './routes/trainersRoutes.js';
+import admissionRoutes from './routes/admissionRoutes.js';
+import serviceRoutes from './routes/serviceRoutes.js';
+
 
 app.use('/api/auth', authRoutes);
 app.use('/api/plans', planRoutes);
 app.use('/api/leads', leadRoutes);
-app.use('/api/admissions', admissionRoutes);
+app.use('/api/calculate', calculateRoutes);
+app.use('/api/trainers', trainerRoutes);
+app.use('/api/admission', admissionRoutes)
+app.use('/api/services', serviceRoutes);
 
 const PORT = process.env.PORT || 5000;
 
