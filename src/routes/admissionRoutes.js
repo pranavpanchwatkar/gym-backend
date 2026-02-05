@@ -2,7 +2,8 @@ import express from 'express';
 import {
     createAdmission,
     getAdmissions,
-    getAdmissionById
+    getAdmissionById,
+    deleteAdmission
 } from '../controller/admissionController.js';
 
 const router = express.Router();
@@ -10,5 +11,6 @@ const router = express.Router();
 router.post('/create', createAdmission);
 router.get('/getadmissions', getAdmissions);
 router.get('/getadmissionbyid/:id', getAdmissionById);
+router.delete('/delete/:id', deleteAdmission);
 
 export default router;

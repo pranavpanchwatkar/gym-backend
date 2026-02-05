@@ -20,7 +20,7 @@ export const createAdmission = async (req, res) => {
         const planPrice = planData.price;
         const remainingAmount = planPrice - amountPaid;
 
-        
+
         const admission = await Admission.create({
             customerName,
             plan,
@@ -64,3 +64,16 @@ export const getAdmissionById = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 };
+
+
+export const deleteAdmission = async (req, res) => {
+    try {
+        const admission = await Admission.findByIdAndDelete(req.params.id)
+        if (!admission) {
+            return res.status(404).json({ message: 'Admission not found' })
+        }
+        res.status(200).json({ message: 'Admission deleted successfully' })
+    } catch (error) {
+        res.status(500).json({ error: error.message })
+    }
+}

@@ -22,6 +22,7 @@ import planRoutes from './routes/plansRoutes.js';
 import leadRoutes from './routes/leadsRoutes.js';
 import calculateRoutes from './routes/calculateRoutes.js';
 import trainerRoutes from './routes/trainersRoutes.js';
+import admissionRoutes from './routes/admissionRoutes.js';
 
 
 app.use('/api/auth', authRoutes);
@@ -29,6 +30,7 @@ app.use('/api/plans', planRoutes);
 app.use('/api/leads', leadRoutes);
 app.use('/api/calculate', calculateRoutes);
 app.use('/api/trainers', trainerRoutes);
+app.use('/api/admission', admissionRoutes)
 
 const PORT = process.env.PORT || 5000;
 
