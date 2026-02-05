@@ -8,7 +8,7 @@ import {
 const router = express.Router();
 
 router.post('/create', createAdmission);
-router.get('/', getAdmissions);
-router.get('/:id', getAdmissionById);
+router.get('/getadmissions', getAdmissions);
+router.get('/getadmissionbyid/:id', getAdmissionById);
 
 export default router;

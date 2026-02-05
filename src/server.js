@@ -17,13 +17,18 @@ mongoose.connect(process.env.MONGO_URI)
     .catch(err => console.log(err));
 
 // Routes
-import authRoutes from './src/routes/auth.js';
-import planRoutes from './src/routes/plans.js';
-import leadRoutes from './src/routes/leads.js';
+import authRoutes from './routes/authRoutes.js';
+import planRoutes from './routes/plansRoutes.js';
+import leadRoutes from './routes/leadsRoutes.js';
+import calculateRoutes from './routes/calculateRoutes.js';
+import trainerRoutes from './routes/trainersRoutes.js';
+
 
 app.use('/api/auth', authRoutes);
 app.use('/api/plans', planRoutes);
 app.use('/api/leads', leadRoutes);
+app.use('/api/calculate', calculateRoutes);
+app.use('/api/trainers', trainerRoutes);
 
 const PORT = process.env.PORT || 5000;
 
