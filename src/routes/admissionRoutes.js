@@ -3,7 +3,8 @@ import {
     createAdmission,
     getAdmissions,
     getAdmissionById,
-    deleteAdmission
+    deleteAdmission,
+    searchAdmissions
 } from '../controller/admissionController.js';
 
 const router = express.Router();
