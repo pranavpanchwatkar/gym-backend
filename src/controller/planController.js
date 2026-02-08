@@ -22,18 +22,31 @@ export const getPlanById = async (req, res) => {
 }
 
 export const createPlan = async (req, res) => {
-    try {
-        const plan = new Plan({
-            name: req.body.name,
-            price: req.body.price,
-            features: req.body.features
-        });
-        const savedPlan = await plan.save();
-        res.status(201).json(savedPlan);
-    } catch (err) {
-        res.status(400).json({ message: err.message });
-    }
-}
+  try {
+    const { name, price, service,durationindays } = req.body;
+
+    const plan = await Plan.create({
+      name,
+      price,
+      service,
+      durationindays
+    });
+
+    res.json(plan);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+export const getPlansByService = async (req, res) => {
+  try {
+    const plans = await Plan.find({ service: req.params.serviceId });
+    res.json(plans);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
 
 export const updatePlan = async (req, res) => {
     try {

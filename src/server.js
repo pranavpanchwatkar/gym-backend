@@ -7,9 +7,14 @@ dotenv.config();
 
 const app = express();
 
-// Middleware
+// ================= CORS FIX =================
+app.use(cors({
+  origin: "http://localhost:5173",   // Vite React URL
+  credentials: true                  // allow cookies / auth
+}));
+// ============================================
+
 app.use(express.json());
-app.use(cors());
 
 // Database Connection
 mongoose.connect(process.env.MONGO_URI)
@@ -25,13 +30,12 @@ import trainerRoutes from './routes/trainersRoutes.js';
 import admissionRoutes from './routes/admissionRoutes.js';
 import serviceRoutes from './routes/serviceRoutes.js';
 
-
 app.use('/api/auth', authRoutes);
 app.use('/api/plans', planRoutes);
 app.use('/api/leads', leadRoutes);
 app.use('/api/calculate', calculateRoutes);
 app.use('/api/trainers', trainerRoutes);
-app.use('/api/admission', admissionRoutes)
+app.use('/api/admission', admissionRoutes);
 app.use('/api/services', serviceRoutes);
 
 const PORT = process.env.PORT || 5000;

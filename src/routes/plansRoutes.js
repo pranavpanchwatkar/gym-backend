@@ -5,9 +5,11 @@ import {
     createPlan,
     updatePlan,
     deletePlan,
+    getPlansByService
 } from '../controller/planController.js';
 
 const router = express.Router();
+router.get("/service/:serviceId", getPlansByService);
 
 router.get('/getplans', getAllPlans);
 router.get('/getplanbyid/:id', getPlanById);

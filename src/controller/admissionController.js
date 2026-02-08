@@ -80,13 +80,17 @@ export const searchAdmissions = async (req, res) => {
 
 // GET ALL ADMISSIONS
 export const getAdmissions = async (req, res) => {
-    try {
-        const admissions = await Admission.find().populate('plan');
-        res.status(200).json(admissions);
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
+  try {
+    const admissions = await Admission.find()
+      .populate("plan"); // 🔥 MOST IMPORTANT LINE
+
+    res.json(admissions);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Server error" });
+  }
 };
+
 
 // GET SINGLE ADMISSION
 export const getAdmissionById = async (req, res) => {
