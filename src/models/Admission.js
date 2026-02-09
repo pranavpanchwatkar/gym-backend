@@ -9,7 +9,9 @@ const admissionSchema = new mongoose.Schema({
 
   mobile: {
     type: String,
-    required: true
+    required: true,
+    unique: true, // ⭐ UNIQUE MOBILE
+    match: [/^[6-9]\d{9}$/, "Invalid mobile number"]
   },
 
   plan: {
@@ -36,19 +38,16 @@ const admissionSchema = new mongoose.Schema({
   paymentMode: {
     type: String,
     enum: ['Cash', 'UPI', 'Card', 'Online'],
-    required: true
+    default: 'Cash'
   },
 
-  note: {
-    type: String
-  },
+  note: String,
 
   admittedAt: {
     type: Date,
     default: Date.now
   }
-}, {
-  timestamps: true
-});
+
+}, { timestamps: true });
 
 export default mongoose.model('Admission', admissionSchema);

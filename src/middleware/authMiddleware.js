@@ -1,20 +1,29 @@
 import jwt from 'jsonwebtoken';
 
 const verify = (req, res, next) => {
-    const token = req.header('auth-token');
-    if (!token) return res.status(401).send('Access Denied');
+
+    let token;
+
+    // Standard Authorization header
+    if (req.headers.authorization && req.headers.authorization.startsWith("Bearer")) {
+        token = req.headers.authorization.split(" ")[1];
+    }
+
+    // If no token
+    if (!token) {
+        return res.status(401).send('Access Denied: No Token Provided');
+    }
 
     try {
         const verified = jwt.verify(token, process.env.JWT_SECRET);
         req.user = verified;
         next();
     } catch (err) {
-        res.status(400).send('Invalid Token');
+        return res.status(401).send('Invalid Token');
     }
 };
 
 const isAdmin = (req, res, next) => {
-    // Since we only have Admin model now, if user is authenticated, they are admin
     if (req.user) {
         next();
     } else {

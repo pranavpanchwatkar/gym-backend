@@ -1,9 +1,12 @@
-import express from 'express';
-import mongoose from 'mongoose';
 import dotenv from 'dotenv';
-import cors from 'cors';
 
 dotenv.config();
+import express from 'express';
+import mongoose from 'mongoose';
+
+import cors from 'cors';
+
+
 
 const app = express();
 
@@ -37,6 +40,11 @@ app.use('/api/calculate', calculateRoutes);
 app.use('/api/trainers', trainerRoutes);
 app.use('/api/admission', admissionRoutes);
 app.use('/api/services', serviceRoutes);
+
+
+console.log("JWT:", process.env.JWT_SECRET);
+console.log("MONGO:", process.env.MONGO_URI);
+
 
 const PORT = process.env.PORT || 5000;
 
