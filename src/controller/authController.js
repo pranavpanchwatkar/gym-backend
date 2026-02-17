@@ -2,22 +2,19 @@ import Admin from '../models/Admin.js';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
-// @desc    Register a new admin
-// @route   POST /api/auth/register
-// @access  Public
+// ================= REGISTER =================
 export const register = async (req, res) => {
     try {
-        // Check if user already exists
+        console.log("REGISTER BODY:", req.body);
+
         const emailExist = await Admin.findOne({ email: req.body.email });
         if (emailExist) {
             return res.status(400).json({ message: 'Email already exists' });
         }
 
-        // Hash password
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(req.body.password, salt);
 
-        // Create a new admin
         const admin = new Admin({
             name: req.body.name,
             email: req.body.email,
@@ -25,38 +22,46 @@ export const register = async (req, res) => {
         });
 
         const savedAdmin = await admin.save();
+
         res.status(201).json({
             message: 'Admin registered successfully',
             adminId: savedAdmin._id
         });
+
     } catch (err) {
+        console.log("REGISTER ERROR:", err);
         res.status(500).json({ message: err.message });
     }
 };
 
-// @desc    Login user
-// @route   POST /api/auth/login
-// @access  Public
+
+// ================= LOGIN =================
 export const login = async (req, res) => {
     try {
-        // Check if user exists
+
+        console.log("REQ BODY =>", req.body);
+
         const admin = await Admin.findOne({ email: req.body.email });
+        console.log("ADMIN FROM DB =>", admin);
+
         if (!admin) {
             return res.status(400).json({ message: 'Email not found' });
         }
 
-        // Check if password is correct
         const validPass = await bcrypt.compare(req.body.password, admin.password);
+        console.log("PASSWORD MATCH =>", validPass);
+
         if (!validPass) {
             return res.status(400).json({ message: 'Invalid password' });
         }
 
-        // Create and assign a token
         const token = jwt.sign(
             { _id: admin._id },
             process.env.JWT_SECRET,
             { expiresIn: '24h' }
         );
+
+        console.log("LOGIN SUCCESS");
 
         res.header('auth-token', token).json({
             token,
@@ -66,7 +71,9 @@ export const login = async (req, res) => {
                 email: admin.email,
             }
         });
+
     } catch (err) {
+        console.log("LOGIN ERROR =>", err);
         res.status(500).json({ message: err.message });
     }
 };
