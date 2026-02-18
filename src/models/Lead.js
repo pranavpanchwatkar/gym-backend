@@ -13,20 +13,25 @@ const LeadSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+
+    // OPTIONAL PLAN
     plan: {
         ref: 'Plan',
         type: mongoose.Schema.Types.ObjectId,
-        required: true
+        default: null
     },
+
     message: {
         type: String,
         required: true
     },
+
     status: {
         type: String,
         enum: ['new', 'contacted', 'lost', 'converted'],
         default: 'new'
     }
-});
+},
+{ timestamps: true });
 
 export default mongoose.model('Lead', LeadSchema);

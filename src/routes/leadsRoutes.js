@@ -8,30 +8,30 @@ import {
     updateLead,
     deleteLead
 } from '../controller/leadController.js';
-import verify from '../middleware/authMiddleware.js';
-import { isAdmin } from '../middleware/authMiddleware.js';
+
+import verify, { isAdmin } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
 
-// @route   GET /api/leads
+// GET all leads (admin)
 router.get('/getleads', verify, isAdmin, getAllLeads);
 
-// @route   GET /api/leads/status/:status
+// GET leads by status
 router.get('/getleadsbystatus/:status', verify, isAdmin, getLeadsByStatus);
 
-// @route   GET /api/leads/:id
+// GET single lead
 router.get('/getleadbyid/:id', verify, isAdmin, getLeadById);
 
-// @route   POST /api/leads
+// PUBLIC - contact form
 router.post('/createlead', createLead);
 
-// @route   PUT /api/leads/:id/status
+// UPDATE status
 router.put('/updateleadstatus/:id', verify, isAdmin, updateLeadStatus);
 
-// @route   PUT /api/leads/:id
+// UPDATE lead
 router.put('/updatelead/:id', verify, isAdmin, updateLead);
 
-// @route   DELETE /api/leads/:id
+// DELETE lead
 router.delete('/deletelead/:id', verify, isAdmin, deleteLead);
 
 export default router;

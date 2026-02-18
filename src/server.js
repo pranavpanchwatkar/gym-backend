@@ -2,7 +2,7 @@ import express from 'express';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import cors from 'cors';
-
+import path from "path";
 dotenv.config();
 
 const app = express();
@@ -10,6 +10,8 @@ const app = express();
 // Middleware
 app.use(express.json());
 app.use(cors());
+//app.use("/uploads", express.static(path.resolve("uploads")));
+app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
 
 // Database Connection
 mongoose.connect(process.env.MONGO_URI)

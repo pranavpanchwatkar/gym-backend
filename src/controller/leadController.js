@@ -44,25 +44,42 @@ export const getLeadById = async (req, res) => {
 // @desc    Create a new lead
 // @route   POST /api/leads
 // @access  Public
+// @desc    Create a new lead
+// @route   POST /api/leads
+// @access  Public
 export const createLead = async (req, res) => {
     try {
-        const lead = new Lead({
-            name: req.body.name,
-            email: req.body.email,
-            phone: req.body.phone,
-            plan: req.body.plan,
-            message: req.body.message,
-            status: req.body.status || 'new'
+        const { name, email, phone, message, plan } = req.body;
+
+        // validation
+        if (!name || !email || !phone || !message) {
+            return res.status(400).json({ message: "All fields are required" });
+        }
+
+        const lead = await Lead.create({
+            name,
+            email,
+            phone,
+            message,
+            plan: plan || null, // important fix
+            status: "new"
         });
 
-        const savedLead = await lead.save();
-        const populatedLead = await Lead.findById(savedLead._id).populate('plan', 'name price');
+        const populatedLead = await Lead.findById(lead._id)
+            .populate('plan', 'name price');
 
-        res.status(201).json(populatedLead, { message: 'Lead created successfully' });
+        res.status(201).json({
+            success: true,
+            message: "Lead created successfully",
+            data: populatedLead
+        });
+
     } catch (err) {
-        res.status(400).json({ message: err.message });
+        console.error("Create Lead Error:", err);
+        res.status(500).json({ message: err.message });
     }
 };
+
 
 // @desc    Update lead status
 // @route   PUT /api/leads/:id/status
