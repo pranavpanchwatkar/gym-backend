@@ -1,5 +1,10 @@
 import dotenv from 'dotenv';
+<<<<<<< HEAD
 
+=======
+import cors from 'cors';
+import path from "path";
+>>>>>>> d888674 (Updated admission controller search and validation fixes also used the multer for adding the images)
 dotenv.config();
 import express from 'express';
 import mongoose from 'mongoose';
@@ -18,6 +23,12 @@ app.use(cors({
 // ============================================
 
 app.use(express.json());
+<<<<<<< HEAD
+=======
+app.use(cors());
+//app.use("/uploads", express.static(path.resolve("uploads")));
+app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
+>>>>>>> d888674 (Updated admission controller search and validation fixes also used the multer for adding the images)
 
 // Database Connection
 mongoose.connect(process.env.MONGO_URI)

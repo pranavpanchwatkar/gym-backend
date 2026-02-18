@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { type } from 'os';
 
 const ServiceSchema = new mongoose.Schema({
     title: {
@@ -11,8 +12,11 @@ const ServiceSchema = new mongoose.Schema({
     },
     amount: {
         type: Number,
-        required: true
-    }
+        default: 0   // ⭐ change
+    },
+    image :{
+        type: String
+    },
 })
 
-export default mongoose.model('Service', ServiceSchema) 
+export default mongoose.model('Service', ServiceSchema)

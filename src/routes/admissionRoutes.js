@@ -4,7 +4,8 @@ import {
     getAdmissions,
     getAdmissionById,
     deleteAdmission,
-    searchAdmissions
+    searchAdmissions,
+     updateAdmission 
 } from '../controller/admissionController.js';
 
 const router = express.Router();
@@ -14,5 +15,6 @@ router.post('/create', createAdmission);
 router.get('/getadmissions', getAdmissions);
 router.get('/getadmissionbyid/:id', getAdmissionById);
 router.delete('/delete/:id', deleteAdmission);
+router.put('/update/:id', updateAdmission);
 
 export default router;
