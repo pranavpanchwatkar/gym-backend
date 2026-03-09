@@ -46,7 +46,10 @@ const admissionSchema = new mongoose.Schema({
   admittedAt: {
     type: Date,
     default: Date.now
-  }
+  },
+  endDate: {
+  type: Date
+},
 
 }, { timestamps: true });
 

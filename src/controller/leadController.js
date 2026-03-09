@@ -148,3 +148,20 @@ export const deleteLead = async (req, res) => {
         res.status(400).json({ message: err.message });
     }
 };
+
+// Get Leads Count
+export const getLeadsCount = async (req, res) => {
+  try {
+    const total = await Lead.countDocuments();
+    const newLeads = await Lead.countDocuments({ status: "new" });
+    const contacted = await Lead.countDocuments({ status: "contacted" });
+
+    res.json({
+      total,
+      newLeads,
+      contacted
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching leads count" });
+  }
+};

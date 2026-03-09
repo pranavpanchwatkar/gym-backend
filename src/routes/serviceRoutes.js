@@ -1,7 +1,4 @@
 import express from 'express';
-<<<<<<< HEAD
-import { createService, deleteServiceById, getServices, getServiceById, updateService } from '../controller/servicesController.js';
-=======
 import {
   createService,
   deleteServiceById,
@@ -10,9 +7,8 @@ import {
   updateService
 } from '../controller/servicesController.js';
 
->>>>>>> d888674 (Updated admission controller search and validation fixes also used the multer for adding the images)
 import verify, { isAdmin } from '../middleware/authMiddleware.js';
-import uploadServiceImage from '../middleware/uploadServiceImage.js';   // ✅ ADD THIS
+import uploadServiceImage from '../middleware/uploadServiceImage.js';
 
 const router = express.Router();
 
@@ -21,23 +17,17 @@ router.post(
   '/create',
   verify,
   isAdmin,
-  uploadServiceImage.single("image"),   // ✅ MULTER
+  uploadServiceImage.single("image"),
   createService
 );
 
 // GET ALL SERVICES
 router.get('/getservices', getServices);
 
-<<<<<<< HEAD
-// ⭐ PUBLIC ROUTE (FRONTEND USE KAREGA)
+// ⭐ PUBLIC ROUTE (Frontend use karega)
 router.get('/:id', getServiceById);
 
-// 🔒 ADMIN ROUTE (dashboard ke liye)
-router.get('/getservicebyid/:id', verify, isAdmin, getServiceById);
-
-router.put('/update/:id', verify, isAdmin, updateService);
-=======
-// GET SINGLE SERVICE
+// 🔒 ADMIN ROUTE (Dashboard ke liye)
 router.get('/getservicebyid/:id', verify, isAdmin, getServiceById);
 
 // UPDATE SERVICE (image optional)
@@ -45,12 +35,11 @@ router.put(
   '/update/:id',
   verify,
   isAdmin,
-  uploadServiceImage.single("image"),   // ✅ MULTER
+  uploadServiceImage.single("image"),
   updateService
 );
 
 // DELETE SERVICE
->>>>>>> d888674 (Updated admission controller search and validation fixes also used the multer for adding the images)
 router.delete('/delete/:id', verify, isAdmin, deleteServiceById);
 
 export default router;

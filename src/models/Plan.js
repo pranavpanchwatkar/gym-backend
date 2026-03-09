@@ -12,10 +12,11 @@ const planSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
+
     service: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Service",
-    required: true
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Service",
+      required: true
     },
 
     price: {
@@ -26,6 +27,14 @@ const planSchema = new mongoose.Schema(
     description: {
       type: String,
       default: "",
+    },
+
+    startDate: {
+      type: Date
+    },
+
+    endDate: {
+      type: Date
     },
 
     isActive: {

@@ -4,7 +4,15 @@ import Plan from '../models/Plan.js';
 /* ================= CREATE ================= */
 export const createAdmission = async (req, res) => {
   try {
-    const { customerName, mobile, plan, amountPaid, paymentMode, note, admittedAt } = req.body;
+    const {
+      customerName,
+      mobile,
+      plan,
+      amountPaid,
+      paymentMode,
+      note,
+      admittedAt
+    } = req.body;
 
     // MOBILE UNIQUE CHECK
     const existing = await Admission.findOne({ mobile });
@@ -12,8 +20,9 @@ export const createAdmission = async (req, res) => {
       return res.status(400).json({ message: 'Mobile number already registered' });
     }
 
-    const planData = await Plan.findById(plan);
-    if (!planData) return res.status(404).json({ message: 'Plan not found' });
+    const planData = await Plan.findById(plan).populate('service');
+    if (!planData)
+      return res.status(404).json({ message: 'Plan not found' });
 
     const planPrice = planData.price;
 
@@ -22,6 +31,13 @@ export const createAdmission = async (req, res) => {
     }
 
     const remainingAmount = planPrice - amountPaid;
+
+    // ✅ START DATE
+    const startDate = admittedAt ? new Date(admittedAt) : new Date();
+
+    // ✅ END DATE CALCULATION
+    const endDate = new Date(startDate);
+    endDate.setDate(startDate.getDate() + (planData.durationindays || 30));
 
     const admission = await Admission.create({
       customerName,
@@ -32,7 +48,8 @@ export const createAdmission = async (req, res) => {
       remainingAmount,
       paymentMode,
       note,
-      admittedAt
+      admittedAt: startDate,
+      endDate
     });
 
     res.status(201).json(admission);
@@ -42,27 +59,48 @@ export const createAdmission = async (req, res) => {
   }
 };
 
+
 /* ================= GET ALL ================= */
 export const getAdmissions = async (req, res) => {
   try {
-    const admissions = await Admission.find().populate('plan').sort({ createdAt: -1 });
+    const admissions = await Admission.find()
+      .populate({
+        path: 'plan',
+        populate: { path: 'service' }
+      })
+      
+      .sort({ createdAt: -1 });
+
+      console.log("FIRST ADMISSION PLAN 👉", admissions[0]?.plan);
+
     res.json(admissions);
+
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
+
 };
+
 
 /* ================= GET ONE ================= */
 export const getAdmissionById = async (req, res) => {
   try {
-    const admission = await Admission.findById(req.params.id).populate('plan');
-    if (!admission) return res.status(404).json({ message: 'Admission not found' });
+    const admission = await Admission.findById(req.params.id)
+      .populate({
+        path: 'plan',
+        populate: { path: 'service' }
+      });
+
+    if (!admission)
+      return res.status(404).json({ message: 'Admission not found' });
 
     res.json(admission);
+
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
+
 
 /* ================= SEARCH ================= */
 export const searchAdmissions = async (req, res) => {
@@ -74,31 +112,42 @@ export const searchAdmissions = async (req, res) => {
         { customerName: { $regex: query, $options: 'i' } },
         { mobile: { $regex: query, $options: 'i' } }
       ]
-    }).populate('plan');
+    }).populate({
+      path: 'plan',
+      populate: { path: 'service' }
+    });
 
     res.json(admissions);
+
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
+
 /* ================= UPDATE ================= */
 export const updateAdmission = async (req, res) => {
   try {
     const admission = await Admission.findById(req.params.id);
-    if (!admission) return res.status(404).json({ message: 'Admission not found' });
+    if (!admission)
+      return res.status(404).json({ message: 'Admission not found' });
 
     // MOBILE UNIQUE CHECK (EXCEPT SELF)
     if (req.body.mobile && req.body.mobile !== admission.mobile) {
       const exists = await Admission.findOne({ mobile: req.body.mobile });
-      if (exists) return res.status(400).json({ message: 'Mobile already used' });
+      if (exists)
+        return res.status(400).json({ message: 'Mobile already used' });
+
       admission.mobile = req.body.mobile;
     }
 
+    let planData;
+
     // PLAN CHANGE
     if (req.body.plan) {
-      const planData = await Plan.findById(req.body.plan);
-      if (!planData) return res.status(404).json({ message: 'Plan not found' });
+      planData = await Plan.findById(req.body.plan);
+      if (!planData)
+        return res.status(404).json({ message: 'Plan not found' });
 
       admission.plan = req.body.plan;
       admission.planPrice = planData.price;
@@ -112,13 +161,36 @@ export const updateAdmission = async (req, res) => {
       admission.amountPaid = req.body.amountPaid;
     }
 
-    // RECALCULATE REMAINING
-    admission.remainingAmount = admission.planPrice - admission.amountPaid;
+    // UPDATE OTHER FIELDS
+    admission.customerName =
+      req.body.customerName ?? admission.customerName;
 
-    admission.customerName = req.body.customerName ?? admission.customerName;
-    admission.paymentMode = req.body.paymentMode ?? admission.paymentMode;
-    admission.note = req.body.note ?? admission.note;
-    admission.admittedAt = req.body.admittedAt ?? admission.admittedAt;
+    admission.paymentMode =
+      req.body.paymentMode ?? admission.paymentMode;
+
+    admission.note =
+      req.body.note ?? admission.note;
+
+    if (req.body.admittedAt) {
+      admission.admittedAt = req.body.admittedAt;
+    }
+
+    // RECALCULATE END DATE
+    const currentPlan =
+      planData || await Plan.findById(admission.plan);
+
+    const startDate = new Date(admission.admittedAt);
+    const endDate = new Date(startDate);
+
+    endDate.setDate(
+      startDate.getDate() + (currentPlan.durationindays || 30)
+    );
+
+    admission.endDate = endDate;
+
+    // RECALCULATE REMAINING
+    admission.remainingAmount =
+      admission.planPrice - admission.amountPaid;
 
     const updated = await admission.save();
     res.json(updated);
@@ -128,13 +200,16 @@ export const updateAdmission = async (req, res) => {
   }
 };
 
+
 /* ================= DELETE ================= */
 export const deleteAdmission = async (req, res) => {
   try {
     const deleted = await Admission.findByIdAndDelete(req.params.id);
-    if (!deleted) return res.status(404).json({ message: 'Admission not found' });
+    if (!deleted)
+      return res.status(404).json({ message: 'Admission not found' });
 
     res.json({ message: 'Admission deleted successfully' });
+
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

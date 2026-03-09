@@ -6,7 +6,8 @@ import {
     createLead,
     updateLeadStatus,
     updateLead,
-    deleteLead
+    deleteLead,
+    getLeadsCount
 } from '../controller/leadController.js';
 
 import verify, { isAdmin } from '../middleware/authMiddleware.js';
@@ -33,5 +34,7 @@ router.put('/updatelead/:id', verify, isAdmin, updateLead);
 
 // DELETE lead
 router.delete('/deletelead/:id', verify, isAdmin, deleteLead);
+
+router.get("/count", verify, isAdmin, getLeadsCount);
 
 export default router;

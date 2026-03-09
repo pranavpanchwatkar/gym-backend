@@ -1,20 +1,12 @@
 import express from 'express';
-import {
-  createAdmission,
-  getAdmissions,
-  getAdmissionById,
-  updateAdmission,
-  deleteAdmission,
-  searchAdmissions
-} from '../controller/admissionController.js';
+import { register, login } from '../controller/authController.js';
 
 const router = express.Router();
 
-router.get('/search', searchAdmissions);
-router.post('/create', createAdmission);
-router.get('/getadmissions', getAdmissions);
-router.get('/getadmissionbyid/:id', getAdmissionById);
-router.put('/update/:id', updateAdmission);   // ⭐ NEW
-router.delete('/delete/:id', deleteAdmission);
+// @route   POST /api/auth/register
+router.post('/register', register);
+
+// @route   POST /api/auth/login
+router.post('/login', login);
 
 export default router;
